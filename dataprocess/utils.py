@@ -1,5 +1,6 @@
 
 import numpy as np
+import tensorflow as tf
 
 def maxlinelikeness(theta,delta,distance,threshold,size):
     
@@ -280,8 +281,16 @@ def standard_deviation(array):
      v = np.var(array)
      std = np.power(v, 0.5)
      return std            
-            
-            
+
+# 3D convolution
+def conv3d(x, W, stride=1):
+    conv_3d = tf.nn.conv3d(x, W, strides=[1, stride, stride, stride, 1], padding='SAME')
+    return conv_3d            
+
+def argmax_tesor(tensor):
+    max_val = tf.reduce_max(tensor)
+    indices = tf.where(tf.equal(tensor, max_val))
+    return tf.reduce_max(indices,0),max_val            
            
     
     

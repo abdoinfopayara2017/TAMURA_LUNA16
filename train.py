@@ -1,9 +1,13 @@
 
 import numpy as np
 import pandas as pd
-from dataprocess.textural_features import calc_coarseness,contrast,directionality,linelikeness,regularity,roughness
+import dataprocess.textural_features as txnp
+import dataprocess.textural_features_tensor_flow as txtf 
+import tensorflow as tf
+import tensorflow_probability as tfp
 
 def train(path,truth):
+    
     '''
     Preprocessing for dataset
     '''
@@ -13,6 +17,7 @@ def train(path,truth):
     # label,data_npy
     # ....
     #
+
     csvimagedata = pd.read_csv(path)
     data = csvimagedata.iloc[:, :].values
     np.random.shuffle(data)
@@ -20,20 +25,27 @@ def train(path,truth):
     images = data[:, 1:]
     # For Labels
     labels = data[:, 0]   
-    tab = np.zeros(0)
+    tab = tf.zeros(0)
+    tabnp = np.zeros(0)
     for i in range (1):
      image = np.load(images[i][0])
      if np.sum(image):
-      #F_crs = calc_coarseness(image,5,0.9)     
+      
+      F_crs = txtf.calc_coarseness(image,5,0.9)
+      F_crs_np = txnp.calc_coarseness(image,5,0.9)       
       #F_cos = contrast(image)
       #F_dir = directionality(image)
       #F_lin = linelikeness(image)
-      F_reg = regularity(image)
+      #F_reg = regularity(image)
       #F_rgh= roughness(image)
-      tab = np.append(tab,F_reg)
+      
+      tab = tf.concat([tab,F_crs],0)
+      tabnp.append(F_crs_np)
+      #tf.print(tab)
     
-    print("Median Max and Min of dataset %d : %2f %2f %2f" %(truth,np.median(tab),np.max(tab),np.min(tab)))
-
+    
+    tf.print(tfp.stats.percentile(tab, 50.0, interpolation='midpoint'),tf.reduce_max(tab),tf.reduce_min(tab))
+    print("Median Max and Min of dataset %d : %2f %2f %2f" %(truth,np.median(tabnp),np.max(tabnp),np.min(tabnp)))
 
 train('dataprocess\\data\\training_class_0.csv',0)
 #train('dataprocess\\data\\training_class_1.csv',1)
