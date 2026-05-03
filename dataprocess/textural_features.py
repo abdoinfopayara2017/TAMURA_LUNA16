@@ -204,10 +204,16 @@ def directionality(numpy_image):
     hd_thetaZY_max_index = np.argmax(hd_thetaZY)
     
     F_dir = 0
+    F_dirXZ = 0
+    F_dirYX = 0
+    F_dirZY = 0
     for ni in range(n):
-        F_dir += np.power((ni - hd_thetaXZ_max_index), 2) * hd_thetaXZ[ni] \
-              + (np.power((ni - hd_thetaYX_max_index), 2) * hd_thetaYX[ni]) \
-              + (np.power((ni - hd_thetaZY_max_index), 2) * hd_thetaZY[ni])
+        F_dirXZ += np.power((ni - hd_thetaXZ_max_index), 2) * hd_thetaXZ[ni] 
+        F_dirYX += (np.power((ni - hd_thetaYX_max_index), 2) * hd_thetaYX[ni]) 
+        F_dirZY += (np.power((ni - hd_thetaZY_max_index), 2) * hd_thetaZY[ni])
+    
+    F_dir = F_dirXZ if(F_dirXZ > F_dirYX) else F_dirYX
+    F_dir = F_dir if(F_dir > F_dirZY) else F_dirZY
     
     return F_dir , thetaXZ_dir , deltaGXZ_dir, thetaYX_dir , deltaGYX_dir, thetaZY_dir, deltaGZY_dir 
 

@@ -277,6 +277,611 @@ def maxlinelikeness(theta,delta,distance,threshold,size):
     
     return Fmax_line_likeness        
 
+def maxlinelikeness_tf(theta,delta,distance,threshold,size):
+    theta = theta[0,:,:,:,0]
+    delta = delta[0,:,:,:,0]
+    z , y , x = theta.shape
+    n = size
+        
+    theta_selected = theta[distance : z - distance,distance : y - distance,distance : x - distance]
+    delta_selected = delta[distance : z - distance,distance : y - distance,distance : x - distance]
+   
+    for m1 in range (n):
+      for m2 in range(n):
+         cond_1 = tf.greater_equal(theta_selected,2*(m1-1)*np.pi/2/n)
+         cond_2 = tf.less(theta_selected,(2*(m1-1)+1)*np.pi/2/n)
+         cond_5 = tf.greater_equal(delta_selected,threshold)         
+
+         #Pd_axial_1_0_0         
+         theta_1_0_0 = theta[2*distance : z,distance : y - distance,distance : x - distance]
+         cond_3 = tf.greater_equal(theta_1_0_0,2*(m2-1)*np.pi/2/n)
+         cond_4 = tf.less(theta_1_0_0,(2*(m1-1)+1)*np.pi/2/n)
+         delta_1_0_0 = delta[2*distance : z,distance : y - distance,distance : x - distance]
+         cond_6 = tf.less(delta_1_0_0,threshold)
+         cond = tf.logical_and(cond_1,cond_2)
+         cond = tf.logical_and(cond_3,cond)
+         cond = tf.logical_and(cond_4,cond)
+         cond = tf.logical_and(cond_5,cond)
+         cond = tf.logical_and(cond_6,cond)
+         s = tf.reshape(tf.reduce_sum(tf.cast(cond, tf.int32)),[1,1])
+         if (m1 == 0 and m2 == 0):
+            Pd_axial_1_0_0 = s
+         elif (m2 == 0) :
+            Pd_axial_1_0_0 = tf.concat([Pd_axial_1_0_0,s],1)
+         else : 
+            Pd_axial_1_0_0 = tf.concat([Pd_axial_1_0_0,s],1)
+        
+         #Pd_axial_2_0_0
+         theta_2_0_0 = theta[0 : z - 2*distance,distance : y - distance,distance : x - distance]
+         cond_3 = tf.greater_equal(theta_2_0_0,2*(m2-1)*np.pi/2/n)
+         cond_4 = tf.less(theta_2_0_0,(2*(m1-1)+1)*np.pi/2/n)
+         delta_2_0_0 = delta[0 : z - 2*distance,distance : y - distance,distance : x - distance]
+         cond_6 = tf.less(delta_2_0_0,threshold)
+         cond = tf.logical_and(cond_1,cond_2)
+         cond = tf.logical_and(cond_3,cond)
+         cond = tf.logical_and(cond_4,cond)
+         cond = tf.logical_and(cond_5,cond)
+         cond = tf.logical_and(cond_6,cond)
+         s = tf.reshape(tf.reduce_sum(tf.cast(cond, tf.int32)),[1,1])
+         if (m1 == 0 and m2 == 0):
+            Pd_axial_2_0_0 = s
+         elif (m2 == 0) :
+            Pd_axial_2_0_0 = tf.concat([Pd_axial_2_0_0,s],1)
+         else : 
+            Pd_axial_2_0_0 = tf.concat([Pd_axial_2_0_0,s],1)
+        
+         #Pd_axial_0_1_0
+         theta_0_1_0 = theta[distance : z - distance,2*distance : y,distance : x - distance]
+         cond_3 = tf.greater_equal(theta_0_1_0,2*(m2-1)*np.pi/2/n)
+         cond_4 = tf.less(theta_0_1_0,(2*(m1-1)+1)*np.pi/2/n)
+         delta_0_1_0 = delta[distance : z - distance,2*distance : y ,distance : x - distance]
+         cond_6 = tf.less(delta_0_1_0,threshold)
+         cond = tf.logical_and(cond_1,cond_2)
+         cond = tf.logical_and(cond_3,cond)
+         cond = tf.logical_and(cond_4,cond)
+         cond = tf.logical_and(cond_5,cond)
+         cond = tf.logical_and(cond_6,cond)
+         s = tf.reshape(tf.reduce_sum(tf.cast(cond, tf.int32)),[1,1])
+         if (m1 == 0 and m2 == 0):
+            Pd_axial_0_1_0 = s
+         elif (m2 == 0) :
+            Pd_axial_0_1_0 = tf.concat([Pd_axial_0_1_0,s],1)
+         else : 
+            Pd_axial_0_1_0 = tf.concat([Pd_axial_0_1_0,s],1)
+         
+         #Pd_axial_0_2_0
+         theta_0_2_0 = theta[distance : z - distance,0 : y - 2*distance,distance : x - distance]
+         cond_3 = tf.greater_equal(theta_0_2_0,2*(m2-1)*np.pi/2/n)
+         cond_4 = tf.less(theta_0_2_0,(2*(m1-1)+1)*np.pi/2/n)
+         delta_0_2_0 = delta[distance : z - distance,0 : y - 2*distance,distance : x - distance]
+         cond_6 = tf.less(delta_0_2_0,threshold)
+         cond = tf.logical_and(cond_1,cond_2)
+         cond = tf.logical_and(cond_3,cond)
+         cond = tf.logical_and(cond_4,cond)
+         cond = tf.logical_and(cond_5,cond)
+         cond = tf.logical_and(cond_6,cond)
+         s = tf.reshape(tf.reduce_sum(tf.cast(cond, tf.int32)),[1,1])
+         if (m1 == 0 and m2 == 0):
+            Pd_axial_0_2_0 = s
+         elif (m2 == 0) :
+            Pd_axial_0_2_0 = tf.concat([Pd_axial_0_2_0,s],1)
+         else : 
+            Pd_axial_0_2_0 = tf.concat([Pd_axial_0_2_0,s],1)
+                     
+         #Pd_axial_0_0_1
+         theta_0_0_1 = theta[distance : z - distance,distance : y - distance,2*distance : x]
+         cond_3 = tf.greater_equal(theta_0_0_1,2*(m2-1)*np.pi/2/n)
+         cond_4 = tf.less(theta_0_0_1,(2*(m1-1)+1)*np.pi/2/n)
+         delta_0_0_1 = delta[distance : z - distance,distance : y - distance,2*distance : x]
+         cond_6 = tf.less(delta_0_0_1,threshold)
+         cond = tf.logical_and(cond_1,cond_2)
+         cond = tf.logical_and(cond_3,cond)
+         cond = tf.logical_and(cond_4,cond)
+         cond = tf.logical_and(cond_5,cond)
+         cond = tf.logical_and(cond_6,cond)
+         s = tf.reshape(tf.reduce_sum(tf.cast(cond, tf.int32)),[1,1])
+         if (m1 == 0 and m2 == 0):
+            Pd_axial_0_0_1 = s
+         elif (m2 == 0) :
+            Pd_axial_0_0_1 = tf.concat([Pd_axial_0_0_1,s],1)
+         else : 
+            Pd_axial_0_0_1 = tf.concat([Pd_axial_0_0_1,s],1)
+         
+         #Pd_axial_0_0_2
+         theta_0_0_2 = theta[distance : z - distance,distance : y - distance,0 : x - 2*distance]
+         cond_3 = tf.greater_equal(theta_0_0_2,2*(m2-1)*np.pi/2/n)
+         cond_4 = tf.less(theta_0_0_2,(2*(m1-1)+1)*np.pi/2/n)
+         delta_0_0_2 = delta[distance : z - distance,distance : y - distance,0 : x - 2*distance]
+         cond_6 = tf.less(delta_0_0_2,threshold)
+         cond = tf.logical_and(cond_1,cond_2)
+         cond = tf.logical_and(cond_3,cond)
+         cond = tf.logical_and(cond_4,cond)
+         cond = tf.logical_and(cond_5,cond)
+         cond = tf.logical_and(cond_6,cond)
+         s = tf.reshape(tf.reduce_sum(tf.cast(cond, tf.int32)),[1,1])
+         if (m1 == 0 and m2 == 0):
+            Pd_axial_0_0_2 = s
+         elif (m2 == 0) :
+            Pd_axial_0_0_2 = tf.concat([Pd_axial_0_0_2,s],1)
+         else : 
+            Pd_axial_0_0_2 = tf.concat([Pd_axial_0_0_2,s],1)
+         
+         #Pd_planar_diagonal_1_1_0
+         theta_1_1_0 = theta[2*distance : z,2*distance : y,distance : x - distance]
+         cond_3 = tf.greater_equal(theta_1_1_0,2*(m2-1)*np.pi/2/n)
+         cond_4 = tf.less(theta_1_1_0,(2*(m1-1)+1)*np.pi/2/n)
+         delta_1_1_0 = delta[2*distance : z,2*distance : y,distance : x - distance]
+         cond_6 = tf.less(delta_1_1_0,threshold)
+         cond = tf.logical_and(cond_1,cond_2)
+         cond = tf.logical_and(cond_3,cond)
+         cond = tf.logical_and(cond_4,cond)
+         cond = tf.logical_and(cond_5,cond)
+         cond = tf.logical_and(cond_6,cond)
+         s = tf.reshape(tf.reduce_sum(tf.cast(cond, tf.int32)),[1,1])
+         if (m1 == 0 and m2 == 0):
+            Pd_planar_diagonal_1_1_0 = s
+         elif (m2 == 0) :
+            Pd_planar_diagonal_1_1_0 = tf.concat([Pd_planar_diagonal_1_1_0,s],1)
+         else : 
+            Pd_planar_diagonal_1_1_0 = tf.concat([Pd_planar_diagonal_1_1_0,s],1)                    
+                           
+         #Pd_planar_diagonal_2_2_0
+         theta_2_2_0 = theta[0 : z - 2*distance,0 : y - 2*distance,distance : x - distance]
+         cond_3 = tf.greater_equal(theta_2_2_0,2*(m2-1)*np.pi/2/n)
+         cond_4 = tf.less(theta_2_2_0,(2*(m1-1)+1)*np.pi/2/n)
+         delta_2_2_0 = delta[0 : z - 2*distance,0 : y - 2*distance,distance : x - distance]
+         cond_6 = tf.less(delta_2_2_0,threshold)
+         cond = tf.logical_and(cond_1,cond_2)
+         cond = tf.logical_and(cond_3,cond)
+         cond = tf.logical_and(cond_4,cond)
+         cond = tf.logical_and(cond_5,cond)
+         cond = tf.logical_and(cond_6,cond)
+         s = tf.reshape(tf.reduce_sum(tf.cast(cond, tf.int32)),[1,1])
+         if (m1 == 0 and m2 == 0):
+            Pd_planar_diagonal_2_2_0 = s
+         elif (m2 == 0) :
+            Pd_planar_diagonal_2_2_0 = tf.concat([Pd_planar_diagonal_2_2_0,s],1)
+         else : 
+            Pd_planar_diagonal_2_2_0 = tf.concat([Pd_planar_diagonal_2_2_0,s],1)
+         
+         #Pd_planar_diagonal_1_2_0
+         theta_1_2_0 = theta[2*distance : z,0 : y - 2*distance,distance : x - distance]
+         cond_3 = tf.greater_equal(theta_1_2_0,2*(m2-1)*np.pi/2/n)
+         cond_4 = tf.less(theta_1_2_0,(2*(m1-1)+1)*np.pi/2/n)
+         delta_1_2_0 = delta[2*distance : z,0 : y - 2*distance,distance : x - distance]
+         cond_6 = tf.less(delta_1_2_0,threshold)
+         cond = tf.logical_and(cond_1,cond_2)
+         cond = tf.logical_and(cond_3,cond)
+         cond = tf.logical_and(cond_4,cond)
+         cond = tf.logical_and(cond_5,cond)
+         cond = tf.logical_and(cond_6,cond)
+         s = tf.reshape(tf.reduce_sum(tf.cast(cond, tf.int32)),[1,1])
+         if (m1 == 0 and m2 == 0):
+            Pd_planar_diagonal_1_2_0 = s
+         elif (m2 == 0) :
+            Pd_planar_diagonal_1_2_0 = tf.concat([Pd_planar_diagonal_1_2_0,s],1)
+         else : 
+            Pd_planar_diagonal_1_2_0 = tf.concat([Pd_planar_diagonal_1_2_0,s],1)
+
+         #Pd_planar_diagonal_2_1_0
+         theta_2_1_0 = theta[0 : z - 2*distance,2*distance : y,distance : x - distance]
+         cond_3 = tf.greater_equal(theta_2_1_0,2*(m2-1)*np.pi/2/n)
+         cond_4 = tf.less(theta_2_1_0,(2*(m1-1)+1)*np.pi/2/n)
+         delta_2_1_0 = delta[0 : z - 2*distance,2*distance : y,distance : x - distance]
+         cond_6 = tf.less(delta_2_1_0,threshold)
+         cond = tf.logical_and(cond_1,cond_2)
+         cond = tf.logical_and(cond_3,cond)
+         cond = tf.logical_and(cond_4,cond)
+         cond = tf.logical_and(cond_5,cond)
+         cond = tf.logical_and(cond_6,cond)
+         s = tf.reshape(tf.reduce_sum(tf.cast(cond, tf.int32)),[1,1])
+         if (m1 == 0 and m2 == 0):
+            Pd_planar_diagonal_2_1_0 = s
+         elif (m2 == 0) :
+            Pd_planar_diagonal_2_1_0 = tf.concat([Pd_planar_diagonal_2_1_0,s],1)
+         else : 
+            Pd_planar_diagonal_2_1_0 = tf.concat([Pd_planar_diagonal_2_1_0,s],1)
+
+         #Pd_planar_diagonal_1_0_1
+         theta_1_0_1 = theta[2*distance : z,distance : y - distance,2*distance : x]
+         cond_3 = tf.greater_equal(theta_1_0_1,2*(m2-1)*np.pi/2/n)
+         cond_4 = tf.less(theta_1_0_1,(2*(m1-1)+1)*np.pi/2/n)
+         delta_1_0_1 = delta[2*distance : z,distance : y - distance,2*distance : x]
+         cond_6 = tf.less(delta_1_0_1,threshold)
+         cond = tf.logical_and(cond_1,cond_2)
+         cond = tf.logical_and(cond_3,cond)
+         cond = tf.logical_and(cond_4,cond)
+         cond = tf.logical_and(cond_5,cond)
+         cond = tf.logical_and(cond_6,cond)
+         s = tf.reshape(tf.reduce_sum(tf.cast(cond, tf.int32)),[1,1])
+         if (m1 == 0 and m2 == 0):
+            Pd_planar_diagonal_1_0_1 = s
+         elif (m2 == 0) :
+            Pd_planar_diagonal_1_0_1 = tf.concat([Pd_planar_diagonal_1_0_1,s],1)
+         else : 
+            Pd_planar_diagonal_1_0_1 = tf.concat([Pd_planar_diagonal_1_0_1,s],1)
+
+         #Pd_planar_diagonal_2_0_2
+         theta_2_0_2 = theta[0 : z - 2*distance,distance : y - distance,0 : x - 2*distance]
+         cond_3 = tf.greater_equal(theta_2_0_2,2*(m2-1)*np.pi/2/n)
+         cond_4 = tf.less(theta_2_0_2,(2*(m1-1)+1)*np.pi/2/n)
+         delta_2_0_2 = delta[0 : z - 2*distance,distance : y - distance,0 : x - 2*distance]
+         cond_6 = tf.less(delta_2_0_2,threshold)
+         cond = tf.logical_and(cond_1,cond_2)
+         cond = tf.logical_and(cond_3,cond)
+         cond = tf.logical_and(cond_4,cond)
+         cond = tf.logical_and(cond_5,cond)
+         cond = tf.logical_and(cond_6,cond)
+         s = tf.reshape(tf.reduce_sum(tf.cast(cond, tf.int32)),[1,1])
+         if (m1 == 0 and m2 == 0):
+            Pd_planar_diagonal_2_0_2 = s
+         elif (m2 == 0) :
+            Pd_planar_diagonal_2_0_2 = tf.concat([Pd_planar_diagonal_2_0_2,s],1)
+         else : 
+            Pd_planar_diagonal_2_0_2 = tf.concat([Pd_planar_diagonal_2_0_2,s],1)
+
+         #Pd_planar_diagonal_1_0_2
+         theta_1_0_2 = theta[2*distance : z,distance : y - distance,0 : x - 2*distance]
+         cond_3 = tf.greater_equal(theta_1_0_2,2*(m2-1)*np.pi/2/n)
+         cond_4 = tf.less(theta_1_0_2,(2*(m1-1)+1)*np.pi/2/n)
+         delta_1_0_2 = delta[2*distance : z,distance : y - distance,0 : x - 2*distance]
+         cond_6 = tf.less(delta_1_0_2,threshold)
+         cond = tf.logical_and(cond_1,cond_2)
+         cond = tf.logical_and(cond_3,cond)
+         cond = tf.logical_and(cond_4,cond)
+         cond = tf.logical_and(cond_5,cond)
+         cond = tf.logical_and(cond_6,cond)
+         s = tf.reshape(tf.reduce_sum(tf.cast(cond, tf.int32)),[1,1])
+         if (m1 == 0 and m2 == 0):
+            Pd_planar_diagonal_1_0_2 = s
+         elif (m2 == 0) :
+            Pd_planar_diagonal_1_0_2 = tf.concat([Pd_planar_diagonal_1_0_2,s],1)
+         else : 
+            Pd_planar_diagonal_1_0_2 = tf.concat([Pd_planar_diagonal_1_0_2,s],1)
+
+         #Pd_planar_diagonal_2_0_1
+         theta_2_0_1 = theta[0 : z - 2*distance,distance : y - distance,2*distance : x]
+         cond_3 = tf.greater_equal(theta_2_0_1,2*(m2-1)*np.pi/2/n)
+         cond_4 = tf.less(theta_2_0_1,(2*(m1-1)+1)*np.pi/2/n)
+         delta_2_0_1 = delta[0 : z - 2*distance,distance : y - distance,2*distance : x]
+         cond_6 = tf.less(delta_2_0_1,threshold)
+         cond = tf.logical_and(cond_1,cond_2)
+         cond = tf.logical_and(cond_3,cond)
+         cond = tf.logical_and(cond_4,cond)
+         cond = tf.logical_and(cond_5,cond)
+         cond = tf.logical_and(cond_6,cond)
+         s = tf.reshape(tf.reduce_sum(tf.cast(cond, tf.int32)),[1,1])
+         if (m1 == 0 and m2 == 0):
+            Pd_planar_diagonal_2_0_1 = s
+         elif (m2 == 0) :
+            Pd_planar_diagonal_2_0_1 = tf.concat([Pd_planar_diagonal_2_0_1,s],1)
+         else : 
+            Pd_planar_diagonal_2_0_1 = tf.concat([Pd_planar_diagonal_2_0_1,s],1)
+
+         #Pd_planar_diagonal_0_1_1
+         theta_0_1_1 = theta[distance : z - distance,2*distance : y,2*distance : x]
+         cond_3 = tf.greater_equal(theta_0_1_1,2*(m2-1)*np.pi/2/n)
+         cond_4 = tf.less(theta_0_1_1,(2*(m1-1)+1)*np.pi/2/n)
+         delta_0_1_1 = delta[distance : z - distance,2*distance : y,2*distance : x]
+         cond_6 = tf.less(delta_0_1_1,threshold)
+         cond = tf.logical_and(cond_1,cond_2)
+         cond = tf.logical_and(cond_3,cond)
+         cond = tf.logical_and(cond_4,cond)
+         cond = tf.logical_and(cond_5,cond)
+         cond = tf.logical_and(cond_6,cond)
+         s = tf.reshape(tf.reduce_sum(tf.cast(cond, tf.int32)),[1,1])
+         if (m1 == 0 and m2 == 0):
+            Pd_planar_diagonal_0_1_1 = s
+         elif (m2 == 0) :
+            Pd_planar_diagonal_0_1_1 = tf.concat([Pd_planar_diagonal_0_1_1,s],1)
+         else : 
+            Pd_planar_diagonal_0_1_1 = tf.concat([Pd_planar_diagonal_0_1_1,s],1)
+
+         #Pd_planar_diagonal_0_2_2
+         theta_0_2_2 = theta[distance : z - distance,0 : y - 2*distance,0 : x - 2*distance]
+         cond_3 = tf.greater_equal(theta_0_2_2,2*(m2-1)*np.pi/2/n)
+         cond_4 = tf.less(theta_0_2_2,(2*(m1-1)+1)*np.pi/2/n)
+         delta_0_2_2 = delta[distance : z - distance,0 : y - 2*distance,0 : x - 2*distance]
+         cond_6 = tf.less(delta_0_2_2,threshold)
+         cond = tf.logical_and(cond_1,cond_2)
+         cond = tf.logical_and(cond_3,cond)
+         cond = tf.logical_and(cond_4,cond)
+         cond = tf.logical_and(cond_5,cond)
+         cond = tf.logical_and(cond_6,cond)
+         s = tf.reshape(tf.reduce_sum(tf.cast(cond, tf.int32)),[1,1])
+         if (m1 == 0 and m2 == 0):
+            Pd_planar_diagonal_0_2_2 = s
+         elif (m2 == 0) :
+            Pd_planar_diagonal_0_2_2 = tf.concat([Pd_planar_diagonal_0_2_2,s],1)
+         else : 
+            Pd_planar_diagonal_0_2_2 = tf.concat([Pd_planar_diagonal_0_2_2,s],1)
+
+         #Pd_planar_diagonal_0_1_2
+         theta_0_1_2 = theta[distance : z - distance,2*distance : y,0 : x - 2*distance]
+         cond_3 = tf.greater_equal(theta_0_1_2,2*(m2-1)*np.pi/2/n)
+         cond_4 = tf.less(theta_0_1_2,(2*(m1-1)+1)*np.pi/2/n)
+         delta_0_1_2 = delta[distance : z - distance,2*distance : y,0 : x - 2*distance]
+         cond_6 = tf.less(delta_0_1_2,threshold)
+         cond = tf.logical_and(cond_1,cond_2)
+         cond = tf.logical_and(cond_3,cond)
+         cond = tf.logical_and(cond_4,cond)
+         cond = tf.logical_and(cond_5,cond)
+         cond = tf.logical_and(cond_6,cond)
+         s = tf.reshape(tf.reduce_sum(tf.cast(cond, tf.int32)),[1,1])
+         if (m1 == 0 and m2 == 0):
+            Pd_planar_diagonal_0_1_2 = s
+         elif (m2 == 0) :
+            Pd_planar_diagonal_0_1_2 = tf.concat([Pd_planar_diagonal_0_1_2,s],1)
+         else : 
+            Pd_planar_diagonal_0_1_2 = tf.concat([Pd_planar_diagonal_0_1_2,s],1)
+
+         #Pd_planar_diagonal_0_2_1
+         theta_0_2_1 = theta[distance : z - distance,0 : y - 2*distance,2*distance : x]
+         cond_3 = tf.greater_equal(theta_0_2_1,2*(m2-1)*np.pi/2/n)
+         cond_4 = tf.less(theta_0_2_1,(2*(m1-1)+1)*np.pi/2/n)
+         delta_0_2_1 = delta[distance : z - distance,0 : y - 2*distance,2*distance : x]
+         cond_6 = tf.less(delta_0_2_1,threshold)
+         cond = tf.logical_and(cond_1,cond_2)
+         cond = tf.logical_and(cond_3,cond)
+         cond = tf.logical_and(cond_4,cond)
+         cond = tf.logical_and(cond_5,cond)
+         cond = tf.logical_and(cond_6,cond)
+         s = tf.reshape(tf.reduce_sum(tf.cast(cond, tf.int32)),[1,1])
+         if (m1 == 0 and m2 == 0):
+            Pd_planar_diagonal_0_2_1 = s
+         elif (m2 == 0) :
+            Pd_planar_diagonal_0_2_1 = tf.concat([Pd_planar_diagonal_0_2_1,s],1)
+         else : 
+            Pd_planar_diagonal_0_2_1 = tf.concat([Pd_planar_diagonal_0_2_1,s],1)
+         
+         #Pd_volumetric_diagonal_1_1_1
+         theta_1_1_1 = theta[2*distance : z,2*distance : y,2*distance : x]
+         cond_3 = tf.greater_equal(theta_1_1_1,2*(m2-1)*np.pi/2/n)
+         cond_4 = tf.less(theta_1_1_1,(2*(m1-1)+1)*np.pi/2/n)
+         delta_1_1_1 = delta[2*distance : z,2*distance : y,2*distance : x]
+         cond_6 = tf.less(delta_1_1_1,threshold)
+         cond = tf.logical_and(cond_1,cond_2)
+         cond = tf.logical_and(cond_3,cond)
+         cond = tf.logical_and(cond_4,cond)
+         cond = tf.logical_and(cond_5,cond)
+         cond = tf.logical_and(cond_6,cond)
+         s = tf.reshape(tf.reduce_sum(tf.cast(cond, tf.int32)),[1,1])
+         if (m1 == 0 and m2 == 0):
+            Pd_volumetric_diagonal_1_1_1 = s
+         elif (m2 == 0) :
+            Pd_volumetric_diagonal_1_1_1 = tf.concat([Pd_volumetric_diagonal_1_1_1,s],1)
+         else : 
+            Pd_volumetric_diagonal_1_1_1 = tf.concat([Pd_volumetric_diagonal_1_1_1,s],1)
+
+         #Pd_volumetric_diagonal_2_2_2
+         theta_2_2_2 = theta[0 : z - 2*distance,0 : y - 2*distance,0 : x - 2*distance]
+         cond_3 = tf.greater_equal(theta_2_2_2,2*(m2-1)*np.pi/2/n)
+         cond_4 = tf.less(theta_2_2_2,(2*(m1-1)+1)*np.pi/2/n)
+         delta_2_2_2 = delta[0 : z - 2*distance,0 : y - 2*distance,0 : x - 2*distance]
+         cond_6 = tf.less(delta_2_2_2,threshold)
+         cond = tf.logical_and(cond_1,cond_2)
+         cond = tf.logical_and(cond_3,cond)
+         cond = tf.logical_and(cond_4,cond)
+         cond = tf.logical_and(cond_5,cond)
+         cond = tf.logical_and(cond_6,cond)
+         s = tf.reshape(tf.reduce_sum(tf.cast(cond, tf.int32)),[1,1])
+         if (m1 == 0 and m2 == 0):
+            Pd_volumetric_diagonal_2_2_2 = s
+         elif (m2 == 0) :
+            Pd_volumetric_diagonal_2_2_2 = tf.concat([Pd_volumetric_diagonal_2_2_2,s],1)
+         else : 
+            Pd_volumetric_diagonal_2_2_2 = tf.concat([Pd_volumetric_diagonal_2_2_2,s],1)
+         
+         #Pd_volumetric_diagonal_1_1_2
+         theta_1_1_2 = theta[2*distance : z,2*distance : y,0 : x - 2*distance]
+         cond_3 = tf.greater_equal(theta_1_1_2,2*(m2-1)*np.pi/2/n)
+         cond_4 = tf.less(theta_1_1_2,(2*(m1-1)+1)*np.pi/2/n)
+         delta_1_1_2 = delta[2*distance : z,2*distance : y,0 : x - 2*distance]
+         cond_6 = tf.less(delta_1_1_2,threshold)
+         cond = tf.logical_and(cond_1,cond_2)
+         cond = tf.logical_and(cond_3,cond)
+         cond = tf.logical_and(cond_4,cond)
+         cond = tf.logical_and(cond_5,cond)
+         cond = tf.logical_and(cond_6,cond)
+         s = tf.reshape(tf.reduce_sum(tf.cast(cond, tf.int32)),[1,1])
+         if (m1 == 0 and m2 == 0):
+            Pd_volumetric_diagonal_1_1_2 = s
+         elif (m2 == 0) :
+            Pd_volumetric_diagonal_1_1_2 = tf.concat([Pd_volumetric_diagonal_1_1_2,s],1)
+         else : 
+            Pd_volumetric_diagonal_1_1_2 = tf.concat([Pd_volumetric_diagonal_1_1_2,s],1)
+         
+         #Pd_volumetric_diagonal_2_2_1
+         theta_2_2_1 = theta[0 : z - 2*distance,0 : y - 2*distance,2*distance : x]
+         cond_3 = tf.greater_equal(theta_2_2_1,2*(m2-1)*np.pi/2/n)
+         cond_4 = tf.less(theta_2_2_1,(2*(m1-1)+1)*np.pi/2/n)
+         delta_2_2_1 = delta[0 : z - 2*distance,0 : y - 2*distance,2*distance : x]
+         cond_6 = tf.less(delta_2_2_1,threshold)
+         cond = tf.logical_and(cond_1,cond_2)
+         cond = tf.logical_and(cond_3,cond)
+         cond = tf.logical_and(cond_4,cond)
+         cond = tf.logical_and(cond_5,cond)
+         cond = tf.logical_and(cond_6,cond)
+         s = tf.reshape(tf.reduce_sum(tf.cast(cond, tf.int32)),[1,1])
+         if (m1 == 0 and m2 == 0):
+            Pd_volumetric_diagonal_2_2_1 = s
+         elif (m2 == 0) :
+            Pd_volumetric_diagonal_2_2_1 = tf.concat([Pd_volumetric_diagonal_2_2_1,s],1)
+         else : 
+            Pd_volumetric_diagonal_2_2_1 = tf.concat([Pd_volumetric_diagonal_2_2_1,s],1)
+         
+         #Pd_volumetric_diagonal_1_2_1
+         theta_1_2_1 = theta[2*distance : z,0 : y - 2*distance,2*distance : x]
+         cond_3 = tf.greater_equal(theta_1_2_1,2*(m2-1)*np.pi/2/n)
+         cond_4 = tf.less(theta_1_2_1,(2*(m1-1)+1)*np.pi/2/n)
+         delta_1_2_1 = delta[2*distance : z,0 : y - 2*distance,2*distance : x]
+         cond_6 = tf.less(delta_1_2_1,threshold)
+         cond = tf.logical_and(cond_1,cond_2)
+         cond = tf.logical_and(cond_3,cond)
+         cond = tf.logical_and(cond_4,cond)
+         cond = tf.logical_and(cond_5,cond)
+         cond = tf.logical_and(cond_6,cond)
+         s = tf.reshape(tf.reduce_sum(tf.cast(cond, tf.int32)),[1,1])
+         if (m1 == 0 and m2 == 0):
+            Pd_volumetric_diagonal_1_2_1 = s
+         elif (m2 == 0) :
+            Pd_volumetric_diagonal_1_2_1 = tf.concat([Pd_volumetric_diagonal_1_2_1,s],1)
+         else : 
+            Pd_volumetric_diagonal_1_2_1 = tf.concat([Pd_volumetric_diagonal_1_2_1,s],1)
+
+         #Pd_volumetric_diagonal_2_1_2
+         theta_2_1_2 = theta[0 : z - 2*distance,2*distance : y,0 : x - 2*distance]
+         cond_3 = tf.greater_equal(theta_2_1_2,2*(m2-1)*np.pi/2/n)
+         cond_4 = tf.less(theta_2_1_2,(2*(m1-1)+1)*np.pi/2/n)
+         delta_2_1_2 = delta[0 : z - 2*distance,2*distance : y,0 : x - 2*distance]
+         cond_6 = tf.less(delta_2_1_2,threshold)
+         cond = tf.logical_and(cond_1,cond_2)
+         cond = tf.logical_and(cond_3,cond)
+         cond = tf.logical_and(cond_4,cond)
+         cond = tf.logical_and(cond_5,cond)
+         cond = tf.logical_and(cond_6,cond)
+         s = tf.reshape(tf.reduce_sum(tf.cast(cond, tf.int32)),[1,1])
+         if (m1 == 0 and m2 == 0):
+            Pd_volumetric_diagonal_2_1_2 = s
+         elif (m2 == 0) :
+            Pd_volumetric_diagonal_2_1_2 = tf.concat([Pd_volumetric_diagonal_2_1_2,s],1)
+         else : 
+            Pd_volumetric_diagonal_2_1_2 = tf.concat([Pd_volumetric_diagonal_2_1_2,s],1)
+
+         #Pd_volumetric_diagonal_1_2_2
+         theta_1_2_2 = theta[2*distance : z,0 : y - 2*distance,0 : x - 2*distance]
+         cond_3 = tf.greater_equal(theta_1_2_2,2*(m2-1)*np.pi/2/n)
+         cond_4 = tf.less(theta_1_2_2,(2*(m1-1)+1)*np.pi/2/n)
+         delta_1_2_2 = delta[2*distance : z,0 : y - 2*distance,0 : x - 2*distance]
+         cond_6 = tf.less(delta_1_2_2,threshold)
+         cond = tf.logical_and(cond_1,cond_2)
+         cond = tf.logical_and(cond_3,cond)
+         cond = tf.logical_and(cond_4,cond)
+         cond = tf.logical_and(cond_5,cond)
+         cond = tf.logical_and(cond_6,cond)
+         s = tf.reshape(tf.reduce_sum(tf.cast(cond, tf.int32)),[1,1])
+         if (m1 == 0 and m2 == 0):
+            Pd_volumetric_diagonal_1_2_2 = s
+         elif (m2 == 0) :
+            Pd_volumetric_diagonal_1_2_2 = tf.concat([Pd_volumetric_diagonal_1_2_2,s],1)
+         else : 
+            Pd_volumetric_diagonal_1_2_2 = tf.concat([Pd_volumetric_diagonal_1_2_2,s],1)
+
+         #Pd_volumetric_diagonal_2_1_1
+         theta_2_1_1 = theta[0 : z - 2*distance,2*distance : y,2*distance : x]
+         cond_3 = tf.greater_equal(theta_2_1_1,2*(m2-1)*np.pi/2/n)
+         cond_4 = tf.less(theta_2_1_1,(2*(m1-1)+1)*np.pi/2/n)
+         delta_2_1_1 = delta[0 : z - 2*distance,2*distance : y,2*distance : x]
+         cond_6 = tf.less(delta_2_1_1,threshold)
+         cond = tf.logical_and(cond_1,cond_2)
+         cond = tf.logical_and(cond_3,cond)
+         cond = tf.logical_and(cond_4,cond)
+         cond = tf.logical_and(cond_5,cond)
+         cond = tf.logical_and(cond_6,cond)
+         s = tf.reshape(tf.reduce_sum(tf.cast(cond, tf.int32)),[1,1])
+         if (m1 == 0 and m2 == 0):
+            Pd_volumetric_diagonal_2_1_1 = s
+         elif (m2 == 0) :
+            Pd_volumetric_diagonal_2_1_1 = tf.concat([Pd_volumetric_diagonal_2_1_1,s],1)
+         else : 
+            Pd_volumetric_diagonal_2_1_1 = tf.concat([Pd_volumetric_diagonal_2_1_1,s],1)
+    
+    
+    indices_i, _ = tf.meshgrid(tf.range(n),tf.range(n), indexing='ij')
+    indices_j, _ = tf.meshgrid(tf.range(n),tf.range(n), indexing='xy')
+    tensor_sub = tf.subtract(indices_i,indices_j)
+    tensor_cos = tf.multiply(tf.cast(tensor_sub,tf.float32),2*np.pi/n)
+    tensor_cos = tf.cos(tensor_cos)
+
+    
+
+    f = tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_axial_1_0_0,tf.float32),[n,n]),tensor_cos)),[1])
+    g = tf.reshape(tf.reduce_sum(Pd_axial_1_0_0),[1])            
+    
+    
+    
+    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_axial_2_0_0,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_axial_2_0_0),[1])],0)
+
+    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_axial_0_1_0,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_axial_0_1_0),[1])],0)
+
+    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_axial_0_2_0,tf.float32),[n,n],tf.float32),tensor_cos)),[1])],0)
+    g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_axial_0_2_0),[1])],0) 
+
+    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_axial_0_0_1,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_axial_0_0_1),[1])],0)
+
+    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_axial_0_0_2,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_axial_0_0_2),[1])],0)
+
+    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_planar_diagonal_1_1_0,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_planar_diagonal_1_1_0),[1])],0) 
+
+    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_planar_diagonal_2_2_0,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_planar_diagonal_2_2_0),[1])],0)   
+    
+    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_planar_diagonal_1_2_0,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_planar_diagonal_1_2_0),[1])],0)
+    
+    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_planar_diagonal_2_1_0,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_planar_diagonal_2_1_0),[1])],0)
+   
+    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_planar_diagonal_1_0_1,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_planar_diagonal_1_0_1),[1])],0)
+
+    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_planar_diagonal_2_0_2,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_planar_diagonal_2_0_2),[1])],0)
+
+    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_planar_diagonal_1_0_2,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_planar_diagonal_1_0_2),[1])],0)
+
+    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_planar_diagonal_2_0_1,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_planar_diagonal_2_0_1),[1])],0)
+            
+    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_planar_diagonal_0_1_1,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_planar_diagonal_0_1_1),[1])],0)       
+            
+    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_planar_diagonal_0_2_2,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_planar_diagonal_0_2_2),[1])],0)           
+    
+    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_planar_diagonal_0_1_2,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_planar_diagonal_0_1_2),[1])],0)
+           
+    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_planar_diagonal_0_2_1,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_planar_diagonal_0_2_1),[1])],0)        
+                       
+    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_volumetric_diagonal_1_1_1,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_volumetric_diagonal_1_1_1),[1])],0)
+    
+    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_volumetric_diagonal_2_2_2,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_volumetric_diagonal_2_2_2),[1])],0)
+                     
+    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_volumetric_diagonal_1_1_2,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_volumetric_diagonal_1_1_2),[1])],0)   
+            
+    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_volumetric_diagonal_2_2_1,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_volumetric_diagonal_2_2_1),[1])],0)
+
+    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_volumetric_diagonal_1_2_1,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_volumetric_diagonal_1_2_1),[1])],0)        
+
+    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_volumetric_diagonal_2_1_2,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_volumetric_diagonal_2_1_2),[1])],0)
+
+    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_volumetric_diagonal_1_2_2,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_volumetric_diagonal_1_2_2),[1])],0)
+   
+    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_volumetric_diagonal_2_1_1,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_volumetric_diagonal_2_1_1),[1])],0)       
+               
+    Temp = tf.divide(f,tf.cast(g,tf.float32))    
+
+    Fmax_line_likeness = tf.reshape(tf.reduce_max(Temp),[1])
+    
+    return Fmax_line_likeness        
+  
+
 def standard_deviation(array):
      v = np.var(array)
      std = np.power(v, 0.5)
@@ -290,7 +895,50 @@ def conv3d(x, W, stride=1):
 def argmax_tesor(tensor):
     max_val = tf.reduce_max(tensor)
     indices = tf.where(tf.equal(tensor, max_val))
-    return tf.reduce_max(indices,0),max_val            
+    return tf.reduce_max(indices,0),max_val
+
+def calculate_theta(delta_1,delta_2):
+    zero1 = tf.equal(delta_1,0)
+    zero2 = tf.equal(delta_2,0)
+    zeroBoth12 = tf.logical_and(zero1, zero2)
+    delta2_one = tf.add(delta_2,1)
+    delta2_pi = tf.add(delta_2, np.pi)  
+    delta_2 = tf.where(zero2,delta2_one,delta_2)    
+    
+    theta12 = tf.atan(tf.math.divide(delta_1, delta_2)) + np.pi / 2.0
+    theta12 = tf.where(zero2, delta2_pi, theta12)
+    theta12 = tf.where(zeroBoth12,delta_2, theta12)
+    
+    return theta12
+
+def histogram_direction(theta,deltaG):
+    n = 16
+    t = 12
+    for ni in range(n):
+        cond1 = tf.greater_equal(deltaG,t)
+        cond2 = tf.greater_equal(theta,(2*ni-1) * np.pi / (2 * n))
+        cond3 = tf.less(theta,(2*ni+1) * np.pi / (2*n))
+        cond = tf.logical_and(cond1, cond2)
+        cond = tf.logical_and(cond3,cond)
+        s = tf.reshape(tf.reduce_sum(tf.cast(cond,tf.int32)),[1])
+        if (ni == 0):
+          hd = s
+        else:
+          hd = tf.concat([hd,s],0)
+    
+    hd = tf.cast(hd,tf.float32)
+    hd = tf.math.divide(hd,tf.reduce_sum(hd))
+    hd_max_index = tf.cast((tf.argmax(hd)),tf.int32)
+    r = tf.cast((tf.range(0,n,1)),tf.int32)
+    rp = tf.pow(tf.subtract(r,hd_max_index),2)
+    hd_x = tf.expand_dims(hd,1)
+    rp_x = tf.cast((tf.transpose(tf.expand_dims(rp,1))),tf.float32)
+    fdir = tf.squeeze(tf.matmul(rp_x,hd_x))
+    return fdir
+
+
+
+
            
     
     
