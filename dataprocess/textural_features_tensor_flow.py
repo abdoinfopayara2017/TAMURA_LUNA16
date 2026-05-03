@@ -1,6 +1,6 @@
 import tensorflow as tf
 import numpy as np
-from .utils import conv3d,argmax_tesor,calculate_theta,histogram_direction,maxlinelikeness_tf
+from .utils import conv3d,argmax_tesor,calculate_theta,histogram_direction,maxlinelikeness_tf,split_sub_tensors
 
 # 3D Coarseness
 def calc_coarseness(numpy_image , K_max ,t):
@@ -180,7 +180,9 @@ def linelikeness(numpy_image):
    
     F_linelikeness = tf.Variable(tf.zeros([3],dtype=tf.float32))
     F_linelikeness = tf.tensor_scatter_nd_update(F_linelikeness,[[0]],maxlinelikeness_tf(theta_1,delta_1,4,12,16))
+    
     F_linelikeness = tf.tensor_scatter_nd_update(F_linelikeness,[[1]],maxlinelikeness_tf(theta_2,delta_2,4,12,16))
+    
     F_linelikeness = tf.tensor_scatter_nd_update(F_linelikeness,[[2]],maxlinelikeness_tf(theta_3,delta_3,4,12,16))
         
     F_lin = tf.reduce_max(F_linelikeness)
@@ -188,6 +190,33 @@ def linelikeness(numpy_image):
     F_lin = tf.expand_dims(F_lin, axis=0)
     return F_lin
 
+def regularity(numpy_image):
+    shape = numpy_image.shape   
+    windows_size = tf.reduce_prod(shape) / 8
+    windows_size = tf.round(tf.pow(windows_size,1/3))
+    windows_size = tf.cast(windows_size,tf.int32)
+    
+    CRS = tf.zeros(0,dtype=tf.float32)
+    COS = tf.zeros(0,dtype=tf.float32)
+    DIR = tf.zeros(0,dtype=tf.float32)
+    LIN = tf.zeros(0,dtype=tf.float32)
+    sub_tensors = split_sub_tensors(numpy_image)
+    for s in range (8):        
+        CRS = tf.concat([CRS,calc_coarseness(sub_tensors[s],5,0.9)],0)
+        COS = tf.concat([COS,contrast(sub_tensors[s])],0)
+        DIR = tf.concat([DIR,directionality(sub_tensors[s])[0]],0)
+        LIN = tf.concat([LIN,linelikeness(sub_tensors[s])],0)
+    
+    # calculat standard deviation
+    F_reg = tf.add(tf.math.reduce_std(CRS),tf.math.reduce_std(COS))
+    F_reg = tf.add(F_reg,tf.math.reduce_std(DIR))
+    F_reg = tf.add(F_reg,tf.math.reduce_std(LIN))
+    F_reg = tf.expand_dims(F_reg, axis=0)
+    return F_reg
+
+def roughness(numpy_image):
+    F_rgh = tf.add(calc_coarseness(numpy_image,5,0.9),contrast(numpy_image))
+    return F_rgh 
         
 
         

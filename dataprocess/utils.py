@@ -789,92 +789,90 @@ def maxlinelikeness_tf(theta,delta,distance,threshold,size):
     
     indices_i, _ = tf.meshgrid(tf.range(n),tf.range(n), indexing='ij')
     indices_j, _ = tf.meshgrid(tf.range(n),tf.range(n), indexing='xy')
-    tensor_sub = tf.subtract(indices_i,indices_j)
-    tensor_cos = tf.multiply(tf.cast(tensor_sub,tf.float32),2*np.pi/n)
-    tensor_cos = tf.cos(tensor_cos)
-
-    
-
-    f = tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_axial_1_0_0,tf.float32),[n,n]),tensor_cos)),[1])
+    tensor_sub = tf.subtract(indices_i,indices_j)    
+    tensor_cos = tf.multiply(tf.cast(tensor_sub,tf.float32),2*np.pi/n)   
+    tensor_cos = tf.cos(tensor_cos) 
+        
+    f = sum_and_reshape(Pd_axial_1_0_0,tensor_cos,n)
     g = tf.reshape(tf.reduce_sum(Pd_axial_1_0_0),[1])            
+   
     
-    
-    
-    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_axial_2_0_0,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    f = tf.concat([f,sum_and_reshape(Pd_axial_2_0_0,tensor_cos,n)],0)
     g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_axial_2_0_0),[1])],0)
 
-    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_axial_0_1_0,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    f = tf.concat([f,sum_and_reshape(Pd_axial_0_1_0,tensor_cos,n)],0)
     g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_axial_0_1_0),[1])],0)
 
-    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_axial_0_2_0,tf.float32),[n,n],tf.float32),tensor_cos)),[1])],0)
+    f = tf.concat([f,sum_and_reshape(Pd_axial_0_2_0,tensor_cos,n)],0)
     g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_axial_0_2_0),[1])],0) 
 
-    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_axial_0_0_1,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    f = tf.concat([f,sum_and_reshape(Pd_axial_0_0_1,tensor_cos,n)],0)
     g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_axial_0_0_1),[1])],0)
 
-    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_axial_0_0_2,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    f = tf.concat([f,sum_and_reshape(Pd_axial_0_0_2,tensor_cos,n)],0)
     g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_axial_0_0_2),[1])],0)
 
-    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_planar_diagonal_1_1_0,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    f = tf.concat([f,sum_and_reshape(Pd_planar_diagonal_1_1_0,tensor_cos,n)],0)
     g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_planar_diagonal_1_1_0),[1])],0) 
 
-    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_planar_diagonal_2_2_0,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    f = tf.concat([f,sum_and_reshape(Pd_planar_diagonal_2_2_0,tensor_cos,n)],0)
     g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_planar_diagonal_2_2_0),[1])],0)   
     
-    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_planar_diagonal_1_2_0,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    f = tf.concat([f,sum_and_reshape(Pd_planar_diagonal_1_2_0,tensor_cos,n)],0)
     g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_planar_diagonal_1_2_0),[1])],0)
     
-    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_planar_diagonal_2_1_0,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    f = tf.concat([f,sum_and_reshape(Pd_planar_diagonal_2_1_0,tensor_cos,n)],0)
     g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_planar_diagonal_2_1_0),[1])],0)
    
-    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_planar_diagonal_1_0_1,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    f = tf.concat([f,sum_and_reshape(Pd_planar_diagonal_1_0_1,tensor_cos,n)],0)
     g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_planar_diagonal_1_0_1),[1])],0)
 
-    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_planar_diagonal_2_0_2,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    f = tf.concat([f,sum_and_reshape(Pd_planar_diagonal_2_0_2,tensor_cos,n)],0)
     g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_planar_diagonal_2_0_2),[1])],0)
 
-    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_planar_diagonal_1_0_2,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    f = tf.concat([f,sum_and_reshape(Pd_planar_diagonal_1_0_2,tensor_cos,n)],0)
     g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_planar_diagonal_1_0_2),[1])],0)
 
-    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_planar_diagonal_2_0_1,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    f = tf.concat([f,sum_and_reshape(Pd_planar_diagonal_2_0_1,tensor_cos,n)],0)
     g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_planar_diagonal_2_0_1),[1])],0)
             
-    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_planar_diagonal_0_1_1,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    f = tf.concat([f,sum_and_reshape(Pd_planar_diagonal_0_1_1,tensor_cos,n)],0)
     g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_planar_diagonal_0_1_1),[1])],0)       
             
-    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_planar_diagonal_0_2_2,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    f = tf.concat([f,sum_and_reshape(Pd_planar_diagonal_0_2_2,tensor_cos,n)],0)
     g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_planar_diagonal_0_2_2),[1])],0)           
     
-    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_planar_diagonal_0_1_2,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    f = tf.concat([f,sum_and_reshape(Pd_planar_diagonal_0_1_2,tensor_cos,n)],0)
     g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_planar_diagonal_0_1_2),[1])],0)
            
-    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_planar_diagonal_0_2_1,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    f = tf.concat([f,sum_and_reshape(Pd_planar_diagonal_0_2_1,tensor_cos,n)],0)
     g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_planar_diagonal_0_2_1),[1])],0)        
                        
-    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_volumetric_diagonal_1_1_1,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    f = tf.concat([f,sum_and_reshape(Pd_volumetric_diagonal_1_1_1,tensor_cos,n)],0)
     g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_volumetric_diagonal_1_1_1),[1])],0)
     
-    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_volumetric_diagonal_2_2_2,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    f = tf.concat([f,sum_and_reshape(Pd_volumetric_diagonal_2_2_2,tensor_cos,n)],0)
     g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_volumetric_diagonal_2_2_2),[1])],0)
                      
-    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_volumetric_diagonal_1_1_2,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    f = tf.concat([f,sum_and_reshape(Pd_volumetric_diagonal_1_1_2,tensor_cos,n)],0)
     g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_volumetric_diagonal_1_1_2),[1])],0)   
             
-    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_volumetric_diagonal_2_2_1,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    f = tf.concat([f,sum_and_reshape(Pd_volumetric_diagonal_2_2_1,tensor_cos,n)],0)
     g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_volumetric_diagonal_2_2_1),[1])],0)
 
-    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_volumetric_diagonal_1_2_1,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    f = tf.concat([f,sum_and_reshape(Pd_volumetric_diagonal_1_2_1,tensor_cos,n)],0)
     g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_volumetric_diagonal_1_2_1),[1])],0)        
 
-    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_volumetric_diagonal_2_1_2,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    f = tf.concat([f,sum_and_reshape(Pd_volumetric_diagonal_2_1_2,tensor_cos,n)],0)
     g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_volumetric_diagonal_2_1_2),[1])],0)
 
-    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_volumetric_diagonal_1_2_2,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    f = tf.concat([f,sum_and_reshape(Pd_volumetric_diagonal_1_2_2,tensor_cos,n)],0)
     g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_volumetric_diagonal_1_2_2),[1])],0)
    
-    f = tf.concat([f,tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(Pd_volumetric_diagonal_2_1_1,tf.float32),[n,n]),tensor_cos)),[1])],0)
+    f = tf.concat([f,sum_and_reshape(Pd_volumetric_diagonal_2_1_1,tensor_cos,n)],0)
     g = tf.concat([g,tf.reshape(tf.reduce_sum(Pd_volumetric_diagonal_2_1_1),[1])],0)       
                
+    
     Temp = tf.divide(f,tf.cast(g,tf.float32))    
 
     Fmax_line_likeness = tf.reshape(tf.reduce_max(Temp),[1])
@@ -936,6 +934,22 @@ def histogram_direction(theta,deltaG):
     fdir = tf.squeeze(tf.matmul(rp_x,hd_x))
     return fdir
 
+def sum_and_reshape(tensor_1,tensor_2,size):
+   return tf.reshape(tf.reduce_sum(tf.multiply(tf.reshape(tf.cast(tensor_1,tf.float32),[size,size]),tensor_2)),[1])
+
+def split_sub_tensors(tensor):
+   # Split dim 0
+   splits1 = tf.split(tensor, 2, axis=0) 
+   # Split dim 1 for each
+   splits2 = [tf.split(s, 2, axis=1) for s in splits1] 
+   # Split dim 2 for each
+   final_sub_tensors = []
+   for s2 in splits2:
+      for s3 in s2:
+         final_sub_tensors.extend(tf.split(s3, 2, axis=2))
+   # final_sub_tensors contains 8 tensors of (24,24,24)
+   
+   return final_sub_tensors   
 
 
 

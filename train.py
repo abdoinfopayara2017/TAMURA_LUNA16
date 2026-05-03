@@ -31,24 +31,24 @@ def train(path,truth):
      image = np.load(images[i][0])
      if np.sum(image):
       
-      #F_crs = txtf.calc_coarseness(image,5,0.9)
+      #F_crs = txtf
       #F_crs_np = txnp.calc_coarseness(image,5,0.9)       
       #F_cos = txtf.contrast(image)
       #F_cos_np = txnp.contrast(image)      
       #F_dir,*_ = txtf.directionality(image)
       #F_dir_np,*_ = txnp.directionality(image)
-      F_lin = txnp.linelikeness(image)
+      #F_lin = txnp.linelikeness(image)
       #F_lin_tf = txtf.linelikeness(image)
-      #F_reg = regularity(image)
-      #F_rgh= roughness(image)
+      #F_reg = txtf.regularity(image)
+      F_rgh= txtf.roughness(image)
       
-      #tab = tf.concat([tab,F_lin_tf],0)
-      tabnp=np.append(tabnp,F_lin)
+      tab = tf.concat([tab,F_rgh],0)
+      #tabnp=np.append(tabnp,F_lin)
       
     
     
-    #tf.print(tfp.stats.percentile(tab, 50.0, interpolation='midpoint'),tf.reduce_max(tab),tf.reduce_min(tab))
-    print("Median Max and Min of dataset %d : %2f %2f %2f" %(truth,np.median(tabnp),np.max(tabnp),np.min(tabnp)))
+    tf.print(tfp.stats.percentile(tab, 50.0, interpolation='midpoint'),tf.reduce_max(tab),tf.reduce_min(tab))
+    #print("Median Max and Min of dataset %d : %2f %2f %2f" %(truth,np.median(tabnp),np.max(tabnp),np.min(tabnp)))
 
 train('dataprocess\\data\\training_class_0.csv',0)
 #train('dataprocess\\data\\training_class_1.csv',1)
