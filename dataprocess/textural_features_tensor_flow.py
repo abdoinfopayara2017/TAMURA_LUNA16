@@ -214,8 +214,8 @@ def regularity(numpy_image):
     F_reg = tf.expand_dims(F_reg, axis=0)
     return F_reg
 
-def roughness(numpy_image):
-    F_rgh = tf.add(calc_coarseness(numpy_image,5,0.9),contrast(numpy_image))
+def roughness(F_crs,F_cos):
+    F_rgh = tf.add(F_crs,F_cos)
     return F_rgh 
         
 
