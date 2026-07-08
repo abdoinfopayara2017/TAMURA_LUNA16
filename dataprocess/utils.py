@@ -890,6 +890,7 @@ def conv3d(x, W, stride=1):
     conv_3d = tf.nn.conv3d(x, W, strides=[1, stride, stride, stride, 1], padding='SAME')
     return conv_3d            
 
+@tf.function
 def argmax_tesor(tensor):
     max_val = tf.reduce_max(tensor)
     indices = tf.where(tf.equal(tensor, max_val))

@@ -3,12 +3,6 @@ import numpy as np
 from .utils import conv3d,argmax_tesor,calculate_theta,histogram_direction,maxlinelikeness_tf,split_sub_tensors
 
 
-# 1. Allocate ONE variable that can accept ANY shape dynamically
-shared_dynamic_buffer = tf.Variable(
-    initial_value=tf.zeros([1, 1, 1, 1, 1], dtype=tf.float32), 
-    shape=tf.TensorShape([None, None, None, None, None]) # Allows resizing
-)
-
 shared_dynamic_buffer_A = tf.Variable(
     initial_value=tf.zeros([1, 1, 1, 1, 1,1], dtype=tf.float32), 
     shape=tf.TensorShape([None, None, None, None, None, None]) # Allows resizing
@@ -19,17 +13,12 @@ shared_dynamic_buffer_E = tf.Variable(
     shape=tf.TensorShape([None, None, None, None, None, None, None]) # Allows resizing
 )
 
-shared_dynamic_buffer_S = tf.Variable(
-    initial_value=tf.zeros([1, 1, 1, 1, 1], dtype=tf.float32), 
-    shape=tf.TensorShape([None, None, None, None, None]) # Allows resizing
-)
-
 shared_dynamic_buffer_kernel = tf.Variable(
     initial_value=tf.zeros([1, 1, 1, 1, 1], dtype=tf.float32), 
     shape=tf.TensorShape([None, None, None, None, None]) # Allows resizing
 )
 
-shared_dynamic_buffer_tensortemp = tf.Variable(
+shared_dynamic_buffer_tensor_temp = tf.Variable(
     initial_value=tf.zeros([1, 1, 1, 1, 1], dtype=tf.float32), 
     shape=tf.TensorShape([None, None, None, None, None]) # Allows resizing
 )
@@ -49,10 +38,6 @@ shared_dynamic_buffer_kernal_x = tf.Variable(
     shape=tf.TensorShape([None, None, None, None, None]) # Allows resizing
 )
 
-shared_dynamic_buffer_kernal_Sbest = tf.Variable(
-    initial_value=tf.zeros([1, 1, 1,], dtype=tf.float32), 
-    shape=tf.TensorShape([None, None, None]) # Allows resizing
-)
 
 class TamuraMethod :
     
@@ -60,19 +45,19 @@ class TamuraMethod :
         self.z=z
         self.y=y
         self.x=x
-        self.image_with_batch = shared_dynamic_buffer        
+        self.image_with_batch = tf.Variable(tf.zeros[1,z,y,x,1])        
         self.A = shared_dynamic_buffer_A
-        self.E = shared_dynamic_buffer_E
-        self.S = shared_dynamic_buffer_S
+        self.E = shared_dynamic_buffer_E        
         self.kernal = shared_dynamic_buffer_kernel
-        self.tensor_temp = shared_dynamic_buffer_tensortemp
+        self.tensor_temp = shared_dynamic_buffer_tensor_temp
         self.kernal_z = shared_dynamic_buffer_kernal_z
         self.kernal_y = shared_dynamic_buffer_kernal_y
         self.kernal_x = shared_dynamic_buffer_kernal_x
-        self.Sbest = shared_dynamic_buffer_kernal_Sbest                
+        self.Sbest = tf.Variable(tf.zeros([z,y,x],dtype=tf.float32))               
     
     
     # 3D Coarseness
+    @tf.function
     def calc_coarseness(self,numpy_image , K_max ,t):
         '''
         numpy_image image in numpy format
