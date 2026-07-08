@@ -24,12 +24,14 @@ def train(path):
       images = data[:, 1:]
       # For Labels
       labels = data[:, 0]    
+      tamuraMethod = txtf.TamuraMethod(0,0,0)
       for index in csvimagedata.index :        
         image = np.load(images[index][0]).astype(np.float32)
         if np.sum(image):      
-          F_crs = txtf.calc_coarseness(image,5,0.9)
+          tamuraMethod.z,tamuraMethod.y,tamuraMethod.x = image.shape
+          F_crs = tamuraMethod.calc_coarseness(image,5,0.9)
           csvimagedata.loc[index, "coarseness"] = float(F_crs)             
-          F_cos = txtf.contrast(image)      
+          '''F_cos = txtf.contrast(image)      
           csvimagedata.loc[index, "contrast"] = float(F_cos)          
           F_dir,*_ = txtf.directionality(image)
           csvimagedata.loc[index, "directionality"] = float(F_dir)      
@@ -38,7 +40,7 @@ def train(path):
           F_reg = txtf.regularity(image)
           csvimagedata.loc[index, "regularity"] = float(F_reg)
           F_rgh= txtf.roughness(F_crs,F_cos)  
-          csvimagedata.loc[index, "roughness"] = float(F_rgh)
+          csvimagedata.loc[index, "roughness"] = float(F_rgh)'''
         print('record number %d is done from %d'% (index,csvimagedata.index.size))
                 
       
