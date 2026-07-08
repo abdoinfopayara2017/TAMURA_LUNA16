@@ -886,6 +886,7 @@ def standard_deviation(array):
      return std            
 
 # 3D convolution
+@tf.function
 def conv3d(x, W, stride=1):
     conv_3d = tf.nn.conv3d(x, W, strides=[1, stride, stride, stride, 1], padding='SAME')
     return conv_3d            

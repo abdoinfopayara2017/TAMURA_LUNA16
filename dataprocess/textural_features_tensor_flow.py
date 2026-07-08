@@ -45,7 +45,7 @@ class TamuraMethod :
         self.z=z
         self.y=y
         self.x=x
-        self.image_with_batch = tf.Variable(tf.zeros[1,z,y,x,1])        
+        self.image_with_batch = tf.Variable(tf.zeros([1,z,y,x,1],dtype=tf.float32))        
         self.A = shared_dynamic_buffer_A
         self.E = shared_dynamic_buffer_E        
         self.kernal = shared_dynamic_buffer_kernel
@@ -133,7 +133,7 @@ class TamuraMethod :
             fcon = std / tf.pow(alfa4, 0.25)
             return tf.reshape(fcon,[-1])
         else : 
-        return tf.reshape(tf.constant(0),[-1])
+         return tf.reshape(tf.constant(0),[-1])
 
     def directionality(numpy_image):
         #Retrieve image dimensions
