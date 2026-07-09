@@ -28,7 +28,7 @@ def train(path):
       tamuraMethod = txtf.TamuraMethod(48,48,48)
       img_shape = (48, 48, 48) 
       image_buffer = np.empty(img_shape, dtype=np.float32)
-      for index in csvimagedata.index :        
+      for index in range (1) : #csvimagedata.index :        
         mmap_array = np.load(images[index][0],mmap_mode='r')
         image_buffer[:] = mmap_array
         if np.sum(image_buffer):          

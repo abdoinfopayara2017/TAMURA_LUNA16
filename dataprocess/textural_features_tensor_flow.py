@@ -39,8 +39,18 @@ shared_dynamic_buffer_kernal_x = tf.Variable(
 )
 
 shared_dynamic_buffer_K_argmax = tf.Variable(
-    initial_value=tf.zeros([1, 1], dtype=tf.float32), 
-    shape=tf.TensorShape([None, None]) # Allows resizing
+    initial_value=tf.zeros([1], dtype=tf.float32), 
+    shape=tf.TensorShape([None]) # Allows resizing
+)
+
+shared_dynamic_buffer_K_argmax = tf.Variable(
+    initial_value=tf.zeros([1], dtype=tf.float32), 
+    shape=tf.TensorShape([None]) # Allows resizing
+)
+
+shared_dynamic_buffer_last_index = tf.Variable(
+    initial_value=tf.zeros([1], dtype=tf.float32), 
+    shape=tf.TensorShape([None]) # Allows resizing
 )
 
 shared_dynamic_buffer_indices = tf.Variable(
@@ -91,13 +101,14 @@ class TamuraMethod :
         #Calculate the Ak difference between non-overlapping windows in 3 directions for each pixel point.    
         self.E.assign(tf.zeros([K_max,3,1,self.z,self.y,self.x,1],dtype=tf.float32))
         
-        puissance = tf.cast(tf.math.pow(2,3*k),dtype=tf.float32)
+        puissance = tf.Variable(0.0,dtype=tf.float32) #tf.cast(tf.math.pow(2,3*k),dtype=tf.float32)
         
         for k in range (K_max):
+            puissance.assign(tf.cast(tf.math.pow(2,3*k),dtype=tf.float32))
             window = np.power(2,k)  
             self.kernal.assign(tf.ones(shape=[window,window,window,1,1]))
             self.tensor_temp.assign(conv3d(self.image_with_batch,self.kernal,1))
-            self.tensor_temp.assign_0div(puissance)
+            self.tensor_temp.assign(tf.math.divide(self.tensor_temp,puissance))
             self.A[k,:,:,:,:,:].assign(self.tensor_temp)
             self.kernal_z.assign(tf.zeros((2*window+1,1,1,1,1)))
             self.kernal_z[0,0,0,0,0].assign(1.0)
@@ -114,22 +125,24 @@ class TamuraMethod :
         
         #For each pixel, compute the value of k that maximises E
         K_argmax = shared_dynamic_buffer_K_argmax
+        last_index = shared_dynamic_buffer_last_index
         indices = shared_dynamic_buffer_indices
-        E_max = tf.Variable(tf.zeros([1],dtype=tf.float32))  
+        E_max = tf.Variable(0.0,dtype=tf.float32)  
         self.Sbest.assign(tf.zeros([self.z,self.y,self.x],dtype=tf.float32))
         for iz in range (self.z):
             for iy in range (self.y):
                 for ix in range (self.x):
-                    K_argmax.assign(argmax_tesor(self.E[:,:,:,iz,iy,ix,:])[0])
-                    E_max.assign(argmax_tesor(self.E[:,:,:,iz,iy,ix,:])[1])
+                    K_argmax.assign(tf.cast(argmax_tesor(self.E[:,:,:,iz,iy,ix,:])[0],dtype=tf.float32))
+                    E_max.assign(tf.cast(argmax_tesor(self.E[:,:,:,iz,iy,ix,:])[1],dtype=tf.float32))
                     number = tf.math.multiply(E_max,tf.constant(t))
-                    indices.assign(tf.where(tf.greater(self.E[:,:,:,iz,iy,ix,:], number)))
+                    indices.assign(tf.cast(tf.where(tf.greater(self.E[:,:,:,iz,iy,ix,:], number)),dtype=tf.float32))
+                    K_argmax_pow = K_argmax[0]
                     if(tf.not_equal(tf.size(indices), 0)):
-                        last_index = tf.reduce_max(indices,0)
-                        last_index = last_index[0]
-                        K_argmax = K_argmax[0]
-                        K_argmax = K_argmax if (tf.greater(K_argmax,last_index)) else last_index
-                    self.Sbest[iz,iy,ix].assign(tf.cast(tf.math.pow(tf.constant(2),tf.cast(K_argmax,tf.int32)),dtype=tf.float32))
+                        last_index.assign(tf.cast(tf.reduce_max(indices,0),dtype=tf.float32))
+                        #last_index.assign(last_index[0],validate_shape=False)
+                        #K_argmax.assign(K_argmax[0],validate_shape=False)
+                        K_argmax_pow = tf.where(tf.greater(K_argmax[0],last_index[0]),K_argmax[0],last_index[0])
+                    self.Sbest[iz,iy,ix].assign(tf.cast(tf.math.pow(tf.constant(2),tf.cast(K_argmax_pow,tf.int32)),dtype=tf.float32))
                         
         Fcrs = tf.reduce_mean(self.Sbest)
         
