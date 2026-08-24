@@ -25,7 +25,7 @@ def train(path):
       images = data[:, 1:]
       # For Labels
       labels = data[:, 0]      
-      for index in range (1) : #csvimagedata.index :        
+      for index in range (len(csvimagedata)) : #csvimagedata.index :        
         image = np.load(images[index][0])       
         if np.sum(image):          
           F_crs = txnp.calc_coarseness(image,5,0.9)
