@@ -7,7 +7,7 @@ import tensorflow as tf
 #@tf.function
 def train(path):
     
-    with tf.device('/gpu:0'):
+    
       '''
       Preprocessing for dataset
       '''
@@ -24,26 +24,22 @@ def train(path):
       # For Image
       images = data[:, 1:]
       # For Labels
-      labels = data[:, 0]    
-      tamuraMethod = txnp.TamuraMethod(48,48,48)
-      img_shape = (48, 48, 48) 
-      image_buffer = np.empty(img_shape, dtype=np.float32)
+      labels = data[:, 0]      
       for index in range (1) : #csvimagedata.index :        
-        mmap_array = np.load(images[index][0],mmap_mode='r')
-        image_buffer[:] = mmap_array
-        if np.sum(image_buffer):          
-          F_crs = tamuraMethod.calc_coarseness(image_buffer,5,0.9)
+        image = np.load(images[index][0])       
+        if np.sum(image):          
+          F_crs = txnp.calc_coarseness(image,5,0.9)
           csvimagedata.loc[index, "coarseness"] = float(F_crs)             
-          #F_cos = txtf.contrast(image)      
-          #csvimagedata.loc[index, "contrast"] = float(F_cos)          
-          #F_dir,*_ = txtf.directionality(image)
-          #csvimagedata.loc[index, "directionality"] = float(F_dir)      
-          #F_lin_tf = txtf.linelikeness(image)
-          #csvimagedata.loc[index, "linelikeness"] = float(F_lin_tf)
-          #F_reg = txtf.regularity(image)
-          #csvimagedata.loc[index, "regularity"] = float(F_reg)
-          #F_rgh= txtf.roughness(F_crs,F_cos)  
-          #csvimagedata.loc[index, "roughness"] = float(F_rgh)'''
+          F_cos = txnp.contrast(image)      
+          csvimagedata.loc[index, "contrast"] = float(F_cos)          
+          F_dir,*_ = txnp.directionality(image)
+          csvimagedata.loc[index, "directionality"] = float(F_dir)      
+          F_lin_tf = txnp.linelikeness(image)
+          csvimagedata.loc[index, "linelikeness"] = float(F_lin_tf)
+          F_reg = txnp.regularity(image)
+          csvimagedata.loc[index, "regularity"] = float(F_reg)
+          F_rgh= txnp.roughness(F_crs,F_cos)  
+          csvimagedata.loc[index, "roughness"] = float(F_rgh)
         print('record number %d is done from %d'% (index,csvimagedata.index.size))
                 
       
