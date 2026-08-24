@@ -1,10 +1,10 @@
 
 import numpy as np
 import pandas as pd
-import dataprocess.textural_features_tensor_flow as txtf 
+import dataprocess.textural_features as txnp 
 import tensorflow as tf
 
-@tf.function
+#@tf.function
 def train(path):
     
     with tf.device('/gpu:0'):
@@ -25,7 +25,7 @@ def train(path):
       images = data[:, 1:]
       # For Labels
       labels = data[:, 0]    
-      tamuraMethod = txtf.TamuraMethod(48,48,48)
+      tamuraMethod = txnp.TamuraMethod(48,48,48)
       img_shape = (48, 48, 48) 
       image_buffer = np.empty(img_shape, dtype=np.float32)
       for index in range (1) : #csvimagedata.index :        
