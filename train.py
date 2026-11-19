@@ -7,7 +7,7 @@ import tensorflow as tf
 @tf.function
 def train(path):
     
-    with tf.device('/gpu:0'):
+    with tf.device('/cpu:0'):
       '''
       Preprocessing for dataset
       '''
@@ -34,10 +34,10 @@ def train(path):
         if np.sum(image_buffer):          
           F_crs = tamuraMethod.calc_coarseness(image_buffer,5,0.9)
           csvimagedata.loc[index, "coarseness"] = float(F_crs)             
-          #F_cos = txtf.contrast(image)      
-          #csvimagedata.loc[index, "contrast"] = float(F_cos)          
-          #F_dir,*_ = txtf.directionality(image)
-          #csvimagedata.loc[index, "directionality"] = float(F_dir)      
+          F_cos = txtf.contrast(image_buffer)      
+          csvimagedata.loc[index, "contrast"] = float(F_cos)          
+          F_dir,*_ = txtf.directionality(image_buffer)
+          csvimagedata.loc[index, "directionality"] = float(F_dir)      
           #F_lin_tf = txtf.linelikeness(image)
           #csvimagedata.loc[index, "linelikeness"] = float(F_lin_tf)
           #F_reg = txtf.regularity(image)
