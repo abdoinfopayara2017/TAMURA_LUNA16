@@ -149,7 +149,7 @@ class TamuraMethod :
         
         return  tf.reshape(Fcrs, [1])       
 
-    def contrast(numpy_image):
+    def contrast(self,numpy_image):
         
         # Convert to a TensorFlow tensor
         numpy_image = tf.convert_to_tensor(numpy_image)
