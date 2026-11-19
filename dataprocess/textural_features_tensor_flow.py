@@ -1,5 +1,6 @@
 import tensorflow as tf
 import numpy as np
+
 from .utils import conv3d,argmax_tesor,calculate_theta,histogram_direction,maxlinelikeness_tf,split_sub_tensors
 
 
@@ -77,7 +78,7 @@ class TamuraMethod :
     
     
     # 3D Coarseness
-    @tf.function
+    #@tf.function
     def calc_coarseness(self,numpy_image , K_max ,t):
         '''
         numpy_image image in numpy format
@@ -164,7 +165,7 @@ class TamuraMethod :
         else : 
          return tf.reshape(tf.constant(0),[-1])
 
-    def directionality(numpy_image):
+    def directionality(self,numpy_image):
         #Retrieve image dimensions
         z , y , x = numpy_image.shape
         # This kernel highlights changes along the z-axis (depth).
@@ -258,8 +259,8 @@ class TamuraMethod :
 
         return tf.reshape(F_dir,[-1]) , thetaXZ_dir , deltaGXZ_dir, thetaYX_dir , deltaGYX_dir, thetaZY_dir, deltaGZY_dir 
 
-    def linelikeness(numpy_image):
-        _,theta_1,delta_1,theta_2,delta_2,theta_3,delta_3 =  directionality(numpy_image)
+    def linelikeness(self,numpy_image):
+        _,theta_1,delta_1,theta_2,delta_2,theta_3,delta_3 =  self.directionality(numpy_image)
         
     
         F_linelikeness = tf.Variable(tf.zeros([3],dtype=tf.float32))
@@ -274,7 +275,7 @@ class TamuraMethod :
         F_lin = tf.expand_dims(F_lin, axis=0)
         return F_lin
 
-    def regularity(numpy_image):
+    def regularity(self,numpy_image):
         shape = numpy_image.shape   
         windows_size = tf.reduce_prod(shape) / 8
         windows_size = tf.round(tf.pow(windows_size,1/3))
@@ -286,10 +287,10 @@ class TamuraMethod :
         LIN = tf.zeros(0,dtype=tf.float32)
         sub_tensors = split_sub_tensors(numpy_image)
         for s in range (8):        
-            CRS = tf.concat([CRS,calc_coarseness(sub_tensors[s],5,0.9)],0)
-            COS = tf.concat([COS,contrast(sub_tensors[s])],0)
-            DIR = tf.concat([DIR,directionality(sub_tensors[s])[0]],0)
-            LIN = tf.concat([LIN,linelikeness(sub_tensors[s])],0)
+            CRS = tf.concat([CRS,self.calc_coarseness(sub_tensors[s],5,0.9)],0)
+            COS = tf.concat([COS,self.contrast(sub_tensors[s])],0)
+            DIR = tf.concat([DIR,self.directionality(sub_tensors[s])[0]],0)
+            LIN = tf.concat([LIN,self.linelikeness(sub_tensors[s])],0)
         
         # calculat standard deviation
         F_reg = tf.add(tf.math.reduce_std(CRS),tf.math.reduce_std(COS))

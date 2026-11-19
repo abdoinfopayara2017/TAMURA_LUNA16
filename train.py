@@ -3,8 +3,9 @@ import numpy as np
 import pandas as pd
 import dataprocess.textural_features_tensor_flow as txtf 
 import tensorflow as tf
+from datetime import datetime
 
-@tf.function
+#@tf.function
 def train(path):
     
     with tf.device('/cpu:0'):
@@ -32,12 +33,16 @@ def train(path):
         mmap_array = np.load(images[index][0],mmap_mode='r')
         image_buffer[:] = mmap_array
         if np.sum(image_buffer):          
+          print("Current time F_crs :", datetime.now())
           F_crs = tamuraMethod.calc_coarseness(image_buffer,5,0.9)
-          csvimagedata.loc[index, "coarseness"] = float(F_crs)             
-          F_cos = txtf.contrast(image_buffer)      
+          csvimagedata.loc[index, "coarseness"] = float(F_crs) 
+          print("Current time F_cos:", datetime.now())            
+          F_cos = tamuraMethod.contrast(image_buffer)      
           csvimagedata.loc[index, "contrast"] = float(F_cos)          
-          F_dir,*_ = txtf.directionality(image_buffer)
+          print("Current time F_dir:", datetime.now())
+          F_dir,*_ = tamuraMethod.directionality(image_buffer)
           csvimagedata.loc[index, "directionality"] = float(F_dir)      
+          print("Current time:", datetime.now())
           #F_lin_tf = txtf.linelikeness(image)
           #csvimagedata.loc[index, "linelikeness"] = float(F_lin_tf)
           #F_reg = txtf.regularity(image)
@@ -49,4 +54,4 @@ def train(path):
       
       csvimagedata.to_csv("data.csv", index=False)    
 
-train('dataprocess/data/training_origine.csv')
+train('dataprocess\\data\\training_origine_windows.csv')
