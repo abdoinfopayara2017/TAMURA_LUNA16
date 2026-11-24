@@ -1,0 +1,1 @@
+1 D:\Doctorat\datasets\LUNA 16\Classification\subset0\1\1_aug\0_20.npy 3.524034 30.783332 62.445652

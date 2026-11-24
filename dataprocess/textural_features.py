@@ -254,8 +254,8 @@ def regularity(numpy_image):
     
     return F_reg
 
-def roughness(numpy_image):
-    F_rgh = calc_coarseness(numpy_image,5,0.9) + contrast(numpy_image)
+def roughness(F_crs,F_cos):
+    F_rgh = F_crs + F_cos
     return F_rgh        
             
        

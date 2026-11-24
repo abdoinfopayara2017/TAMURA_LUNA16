@@ -29,22 +29,27 @@ def train(path):
       for index in range (1) : #len(csvimagedata) :        
         image = np.load(images[index][0])       
         if np.sum(image):          
-          print("Current time F_crs :" , datetime.now())
+          #print ("F_crs ",datetime.now())
           F_crs = txnp.calc_coarseness(image,5,0.9)          
-          csvimagedata.loc[index, "coarseness"] = float(F_crs)             
-          print("Current time F_cos :" , datetime.now())
+          csvimagedata.loc[index, "coarseness"] = float(F_crs)          
+          #print ("F_cos ",datetime.now())
           F_cos = txnp.contrast(image)      
-          csvimagedata.loc[index, "contrast"] = float(F_cos)          
-          print("Current time F_dir :" , datetime.now())
+          csvimagedata.loc[index, "contrast"] = float(F_cos)         
+          #print ("F_dir ",datetime.now())
           F_dir,*_ = txnp.directionality(image)
-          csvimagedata.loc[index, "directionality"] = float(F_dir)      
-          print(datetime.now())
-          #F_lin_tf = txnp.linelikeness(image)
-          #csvimagedata.loc[index, "linelikeness"] = float(F_lin_tf)
+          csvimagedata.loc[index, "directionality"] = float(F_dir)          
+          #print ("F_lin ",datetime.now())
+          #F_lin = txnp.linelikeness(image)
+          #csvimagedata.loc[index, "linelikeness"] = float(F_lin)
+          #print ("F_reg ",datetime.now())
           #F_reg = txnp.regularity(image)
           #csvimagedata.loc[index, "regularity"] = float(F_reg)
+          #print ("F_rgh ",datetime.now())
           #F_rgh= txnp.roughness(F_crs,F_cos)  
-          #csvimagedata.loc[index, "roughness"] = float(F_rgh)
+          #csvimagedata.loc[index, "roughness"] = float(F_rgh)         
+        row = csvimagedata.iloc[[index]]
+        with open("data.txt", "a") as f:
+          f.write(row.to_string(index=False,header=False)+ "\n")
         print('record number %d is done from %d'% (index,csvimagedata.index.size))
                 
       
