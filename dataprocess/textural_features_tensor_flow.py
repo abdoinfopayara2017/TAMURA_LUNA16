@@ -111,6 +111,7 @@ class TamuraMethod :
             self.tensor_temp.assign(conv3d(self.image_with_batch,self.kernal,1))
             self.tensor_temp.assign(tf.math.divide(self.tensor_temp,puissance))
             self.A[k,:,:,:,:,:].assign(self.tensor_temp)
+            
             self.kernal_z.assign(tf.zeros((2*window+1,1,1,1,1)))
             self.kernal_z[0,0,0,0,0].assign(1.0)
             self.kernal_z[2*window,0,0,0,0].assign(-1.0)
