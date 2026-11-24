@@ -107,7 +107,7 @@ class TamuraMethod :
         for k in range (K_max):
             puissance.assign(tf.cast(tf.math.pow(2,3*k),dtype=tf.float32))
             window = np.power(2,k)  
-            self.kernal.assign(tf.ones(shape=[window,window,window,1,1]))
+            self.kernal.assign(tf.ones(shape=[2*window,2*window,2*window,1,1]))
             self.tensor_temp.assign(conv3d(self.image_with_batch,self.kernal,1))
             self.tensor_temp.assign(tf.math.divide(self.tensor_temp,puissance))
             self.A[k,:,:,:,:,:].assign(self.tensor_temp)
